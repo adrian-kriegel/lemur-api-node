@@ -1,5 +1,5 @@
-## WARNING
-This is a beta. Please use with care.
+## Disclaimer
+This project is not affiliated with Postman in any way. This is a beta. Please use with care. 
 
 ## lemur-api
 Lemur checks body structure, sanitizes inputs and documents endpoints in your postman collection. You can also use lemur to provide your front end with a JSON based documentation to match client and server side validation of inputs or generate forms automatically.
@@ -7,6 +7,20 @@ Lemur checks body structure, sanitizes inputs and documents endpoints in your po
 ```
 npm install lemur-api
 ```
+
+## Postman
+See the example below on how to connect your Postman collection with lemur. 
+
+To update your Postman collections:
+
+```javascript
+lemur.updateAllCollections()
+```
+or from the command line (once your application is running):
+```
+pr-ud
+```
+Keep in mind that the use of the first option may lead you to reaching your Postman API limits quite fast, especially when using nodemon.
 
 ## Example
 The following example might seem like a lot of code but keep in mind that the options will only have to be defined once.

@@ -9,6 +9,9 @@ npm install lemur-api
 ```
 
 ## Example
+The following example might seem like a lot of code but keep in mind that the options will only have to be defined once.
+
+Run this example:
 ```
 npm run example
 ```

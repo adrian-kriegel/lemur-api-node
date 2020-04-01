@@ -1,0 +1,37 @@
+{
+  "name": "lemur-api",
+  "version": "1.0.0",
+  "description": "[BETA] Lemur checks body structure, sanitizes and documents endpoints in postman. ",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "jsonschema": "^1.2.6",
+    "node-simple-cli": "git+https://github.com/adrian-kriegel/node-simple-cli.git",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "example": "nodemon ./example/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adrian-kriegel/lemur-api-node.git"
+  },
+  "keywords": [
+    "lemur",
+    "lemur-api",
+    "postman",
+    "schema",
+    "json",
+    "sanitize"
+  ],
+  "author": "Adrian Kriegel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adrian-kriegel/lemur-api-node/issues"
+  },
+  "homepage": "https://github.com/adrian-kriegel/lemur-api-node#readme"
+}

@@ -11,7 +11,9 @@
     "node-simple-cli": "git+https://github.com/adrian-kriegel/node-simple-cli.git",
     "request": "^2.88.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "express": "^4.17.1"
+  },
   "scripts": {
     "example": "nodemon ./example/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"

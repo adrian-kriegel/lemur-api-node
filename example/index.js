@@ -1,5 +1,12 @@
 
-//require('lemur-api')
+require('dotenv').config()
+
+if(!process.env.POSTMAN_API_KEY)
+{
+	console.error('Missing postman API key in .env file.')
+	console.error('.env file must be placed in module root.')
+}
+
 const lemur = require('../')
 
 const express = require('express')
@@ -29,8 +36,8 @@ lemur.options('internal-api',
 	//link up your postman collection
 	postman: 
 	{
-		apikey: 'your postman api key here',
-		collection_uid: 'uid of your postman collection'
+		apikey: process.env.POSTMAN_API_KEY,
+		collection_uid: process.env.POSTMAN_COLLECTION_UID
 	},
 
 	//a list of schemas if you want to use $ref

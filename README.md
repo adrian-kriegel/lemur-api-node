@@ -98,7 +98,7 @@ Every endpoint requires at least one callback. Callbacks are compatible with exp
 Example callback chain: 
 
 ```javascript
-[ requireLogin ,secondCallback, () => { return 'You are logged in!' } ]
+[ requireLogin, secondCallback, () => { return 'You are logged in!' } ]
 ```
 Example with an APIError:
 

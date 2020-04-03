@@ -56,7 +56,7 @@ router.add(
 		}
 	},
 	
-	//will return object if someObject is a valid JSON object
+	//will return "object" if someObject is a valid JSON object
 	callback: (req) => { return typeof(req.body.someObject) }
 })
 

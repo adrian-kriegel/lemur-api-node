@@ -37,7 +37,7 @@ pr-ud
 ```
 Keep in mind that the use of the first option may lead you to reaching your Postman API limits quite fast, especially when using nodemon.
 
-## Body, Query & Files
+## Body & Query
 Lemur requires a body parser. Single parameters will then be parsed as outlined by the endpoint description. Parameters not included in the endpoint description will be ignored and will remain in req.body and req.query respectively. If a required parameter is missing or if a parameter does not fit the defined schema, the response will be rejected with a BAD_REQUEST error. Example:
 
 ```javascript
@@ -61,6 +61,36 @@ router.add(
 })
 
 ```
+
+## Files
+Use the files property to make sure required files are present and that all files have the correct mime type. Make sure you use express-fileupload before adding any endpoint that makes use of the files property.
+
+```javascript
+//use express-fileupload before defining this endpoint
+router.add(
+{
+	//[...] 
+	//see the example below on how to use add()
+	
+	//define files
+	files:
+	{
+		thumbnails:
+		{
+			description: 'Posters for the gallery.',
+			mimetypes: ["image/png", "image/jpeg"],
+			required: true
+		},
+	},
+	callback: () =>
+	{
+		//do something with the uploaded files in here
+		return req.files.thumbnails
+	}
+	
+})
+```javascript
+
 
 ## Callback
 Every endpoint requires at least one callback. Callbacks are compatible with express callbacks but are wrapped in a try-catch block so that anything returned from the callback will be treated as the end of the callback chain and sent to the client. Any Exception thrown in a callback will also terminate the chain. To send an Exception to the client, use an APIError. Any other exception will be treated as an internal server error. Callbacks may be asynchronous.

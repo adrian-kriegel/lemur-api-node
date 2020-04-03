@@ -82,7 +82,7 @@ router.add(
 			required: true
 		},
 	},
-	callback: () =>
+	callback: (req) =>
 	{
 		//do something with the uploaded files in here
 		return req.files.thumbnails

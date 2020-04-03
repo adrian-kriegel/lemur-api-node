@@ -89,16 +89,16 @@ router.add(
 	}
 	
 })
-```javascript
+```
 
 
-## Callback
+## Callback & callback chains
 Every endpoint requires at least one callback. Callbacks are compatible with express callbacks but are wrapped in a try-catch block so that anything returned from the callback will be treated as the end of the callback chain and sent to the client. Any Exception thrown in a callback will also terminate the chain. To send an Exception to the client, use an APIError. Any other exception will be treated as an internal server error. Callbacks may be asynchronous.
 
 Example callback chain: 
 
 ```javascript
-[someCallback, () => { return 'Hello World!' } ]
+[ requireLogin ,secondCallback, () => { return 'You are logged in!' } ]
 ```
 Example with an APIError:
 

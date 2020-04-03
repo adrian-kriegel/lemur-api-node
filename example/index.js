@@ -107,13 +107,32 @@ router.add(
 	}
 })
 
+router.add(
+{
+	method: ['POST', 'GET'],
+
+	route: '/typeof',
+
+	description: 'Returns type of JSON object.',
+
+	query:
+	{
+		someObject:
+		{
+			type: 'object'
+		}
+	},
+	
+	callback: (req) => { return typeof(req.query.someObject) }
+})
+
 
 //create an express app like normal
 const app = express()
 
-app.use(router.getRouter())
-
 //add your favourite body parser
 app.use(express.urlencoded({extended: false}))
+
+app.use(router.getRouter())
 
 app.listen(SERVER_PORT, () => console.log('Server running on port ' + SERVER_PORT) )

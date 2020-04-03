@@ -8,6 +8,21 @@ Lemur checks body structure, sanitizes inputs and documents endpoints in your po
 npm install lemur-api
 ```
 
+## Response structure
+Lemur enforces a response structure similar to that of JSON-RPC 2.0. The main difference being that the error object is always defined. The result object will simply be ignored if error.code is not 200. Example response: 
+
+```javascript
+{
+	"result": "Hello World",
+	"error":
+	{
+		"code":200,
+      		"msg":"success",
+		"data":{}
+	}
+}
+```
+
 ## Postman
 See the example below on how to connect your Postman collection with lemur. 
 
@@ -21,6 +36,63 @@ or from the command line (once your application is running):
 pr-ud
 ```
 Keep in mind that the use of the first option may lead you to reaching your Postman API limits quite fast, especially when using nodemon.
+
+## Body, Query & Files
+Lemur requires a body parser. Single parameters will then be parsed as outlined by the endpoint description. Parameters not included in the endpoint description will be ignored and will remain in req.body and req.query respectively. If a required parameter is missing or if a parameter does not fit the defined schema, the response will be rejected with a BAD_REQUEST error. Example:
+
+```javascript
+
+router.add(
+{
+	//[...]
+	//see the example below on how to use add()
+	
+	params:
+	{
+		someObject:
+		{
+			//any json schema
+			type: 'object'
+		}
+	},
+	
+	//will return object if someObject is a valid JSON object
+	callback: (req) => { return typeof(req.body.someObject) }
+})
+
+```
+
+## Callback
+Every endpoint requires at least one callback. Callbacks are compatible with express callbacks but are wrapped in a try-catch block so that anything returned from the callback will be treated as the end of the callback chain and sent to the client. Any Exception thrown in a callback will also terminate the chain. To send an Exception to the client, use an APIError. Any other exception will be treated as an internal server error. Callbacks may be asynchronous.
+
+Example callback chain: 
+
+```javascript
+[someCallback, () => { return 'Hello World!' } ]
+```
+Example with an APIError:
+
+
+```javascript
+function failedCallback(req, res, next)
+{
+	throw new lemur.APIError()
+	.code(400)
+	.msg('errormsg')
+	.data({ foo: 'bar' })
+} 
+```
+
+```javascript
+function failedCallback2(req, res, next)
+{
+	//use a pre-defined error code
+	throw lemur.ERRORS.BAD_REQUEST()
+	.msg('errormsg')
+	.data({ foo: 'bar' })
+} 
+```
+
 
 ## Example
 The following example might seem like a lot of code but keep in mind that the options will only have to be defined once.
@@ -89,6 +161,7 @@ router.add(
 	description: 'Returns a date as a stringified date object.',
 
 	//outline the expected query parameters
+	//to define body parameters, use "params" instead
 	query: 
 	{
 		date: 
@@ -143,10 +216,10 @@ router.add(
 //create an express app like normal
 const app = express()
 
-app.use(router.getRouter())
-
-//add your favourite body parser
+//add a body parser if your want to access req.body
 app.use(express.urlencoded({extended: false}))
+
+app.use(router.getRouter())
 
 app.listen(SERVER_PORT, () => console.log('Server running on port ' + SERVER_PORT) )
 

@@ -1,6 +1,6 @@
 {
   "name": "lemur-api",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "[BETA] Lemur checks body structure, sanitizes and documents endpoints in postman. ",
   "main": "index.js",
   "directories": {

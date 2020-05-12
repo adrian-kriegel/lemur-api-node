@@ -9,6 +9,8 @@ if(!process.env.POSTMAN_API_KEY)
 
 const lemur = require('../')
 
+const baker = require('../lib/schema-baker')
+
 const express = require('express')
 
 const SERVER_PORT = 1337
@@ -43,7 +45,16 @@ lemur.options('internal-api',
 	//a list of schemas if you want to use $ref
 	schemas: 
 	{
-		//...
+		date:
+		{
+			//a json schema for a date which can be referenced using $ref
+			id: '/date',
+			type: 'string',
+
+			//this is redundant and merely for the purpose of the example
+			//since we use the process function to cast to Date anyway
+			pattern: /^\d{1,2}\/\d{1,2}\/\d{4}$/,
+		}
 	}
 })
 
@@ -68,16 +79,11 @@ router.add(
 	{
 		date: 
 		{ 
-			//a json schema for a date
-			id: '/date',
-			type: 'string',
+			//use $ref if you want to use a schema from the "schemas" option
+			$ref: '/date',
 
 			//the example will be the default value on postman
 			example: '09/17/1997',
-
-			//this is redundant and merely for the purpose of the example
-			//since we use the process function to cast to Date anyway
-			pattern: /^\d{1,2}\/\d{1,2}\/\d{4}$/,
 
 			//we use the process function to turn the string into a Date object
 			//if this throws an exception, the string is rejected
@@ -133,6 +139,8 @@ router.add(
 	callback: (req) => { return typeof(req.query.someObject) }
 })
 
+
+console.log(JSON.stringify(lemur.bakeParams('POST', '/echo-date')))
 
 //create an express app like normal
 const app = express()

@@ -140,6 +140,30 @@ router.add(
 })
 
 
+/**
+	Error handling example
+*/
+//this route will always produce an error
+router.add(
+{
+	method: 'ALL',
+
+	route: '/internal-error',
+
+	callback: () =>
+	{
+		//produce an error that is not an APIError
+		return thisVarIsNotDefined.attr
+	}
+})
+
+//anything thrown in the callback that is not an APIError will cause this handler to be executed
+lemur.onInternalError((req, res, error) =>
+{
+	console.error(error)
+})
+
+
 console.log(JSON.stringify(lemur.bakeParams('POST', '/echo-date')))
 
 //create an express app like normal

@@ -122,7 +122,11 @@ function failedCallback2(req, res, next)
 	.data({ foo: 'bar' })
 } 
 ```
-
+## Internal Errors
+By default anything thrown inside the callback chain that is not of type APIError will result in an internal server error being sent to the client. Nothing else will happen. If you need to log or diplay an errors, define an error handler: 
+```javascript
+lemur.onInternalError((req, res, error) => {})
+```
 
 ## Example
 The following example might seem like a lot of code but keep in mind that the options will only have to be defined once.
@@ -134,7 +138,18 @@ npm run example
 
 ```javascript
 
-const lemur = require('lemur-api')
+
+require('dotenv').config()
+
+if(!process.env.POSTMAN_API_KEY)
+{
+	console.error('Missing postman API key in .env file.')
+	console.error('.env file must be placed in module root.')
+}
+
+const lemur = require('../')
+
+const baker = require('../lib/schema-baker')
 
 const express = require('express')
 
@@ -163,14 +178,23 @@ lemur.options('internal-api',
 	//link up your postman collection
 	postman: 
 	{
-		apikey: 'your postman api key here',
-		collection_uid: 'uid of your postman collection'
+		apikey: process.env.POSTMAN_API_KEY,
+		collection_uid: process.env.POSTMAN_COLLECTION_UID
 	},
 
-	//a list of schemas if you want to use $ref in your parameter definitions
+	//a list of schemas if you want to use $ref
 	schemas: 
 	{
-		//...
+		date:
+		{
+			//a json schema for a date which can be referenced using $ref
+			id: '/date',
+			type: 'string',
+
+			//this is redundant and merely for the purpose of the example
+			//since we use the process function to cast to Date anyway
+			pattern: /^\d{1,2}\/\d{1,2}\/\d{4}$/,
+		}
 	}
 })
 
@@ -191,21 +215,15 @@ router.add(
 	description: 'Returns a date as a stringified date object.',
 
 	//outline the expected query parameters
-	//to define body parameters, use "params" instead
 	query: 
 	{
 		date: 
 		{ 
-			//a json schema for a date
-			id: '/date',
-			type: 'string',
+			//use $ref if you want to use a schema from the "schemas" option
+			$ref: '/date',
 
 			//the example will be the default value on postman
 			example: '09/17/1997',
-
-			//this is redundant and merely for the purpose of the example
-			//since we use the process function to cast to Date anyway
-			pattern: /^\d{1,2}\/\d{1,2}\/\d{4}$/,
 
 			//we use the process function to turn the string into a Date object
 			//if this throws an exception, the string is rejected
@@ -242,11 +260,56 @@ router.add(
 	}
 })
 
+router.add(
+{
+	method: ['POST', 'GET'],
+
+	route: '/typeof',
+
+	description: 'Returns type of JSON object.',
+
+	query:
+	{
+		someObject:
+		{
+			type: 'object'
+		}
+	},
+	
+	callback: (req) => { return typeof(req.query.someObject) }
+})
+
+
+/**
+	Error handling example
+*/
+//this route will always produce an error
+router.add(
+{
+	method: 'ALL',
+
+	route: '/internal-error',
+
+	callback: () =>
+	{
+		//produce an error that is not an APIError
+		return thisVarIsNotDefined.attr
+	}
+})
+
+//anything thrown in the callback that is not an APIError will cause this handler to be executed
+lemur.onInternalError((req, res, error) =>
+{
+	console.error(error)
+})
+
+
+console.log(JSON.stringify(lemur.bakeParams('POST', '/echo-date')))
 
 //create an express app like normal
 const app = express()
 
-//add a body parser if your want to access req.body
+//add your favourite body parser
 app.use(express.urlencoded({extended: false}))
 
 app.use(router.getRouter())

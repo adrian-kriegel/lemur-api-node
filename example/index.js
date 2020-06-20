@@ -89,7 +89,8 @@ router.add(
 			//if this throws an exception, the string is rejected
 			//this is not standard for json schemas
 			//the process function is not required
-			process: (str) => 
+			//you can use a single function or an array of functions
+			process: [(str) => 
 			{
 				let timestamp = Date.parse(str)
 
@@ -103,6 +104,17 @@ router.add(
 					.msg('invalid date')
 				}
 			},
+			(date) =>
+			{
+				//you can now use the date object returned from the first function to process the parameter further
+				if(date < new Date('09/17/1997'))
+				{
+					throw lemur.ERRORS.BAD_REQUEST()
+					.msg('please provide a date after 09/17/1997')
+				}
+
+				return date
+			}],
 
 			//by default this is false. the request will fail if no date is provided
 			required: true
@@ -132,7 +144,25 @@ router.add(
 	{
 		someObject:
 		{
-			type: 'object'
+			schema:
+			{
+				type: 'object',
+				properties:
+				{
+					requiredProp:
+					{
+						type: 'boolean'
+					}
+				},
+				//we are going to add this property in the before() function
+				required: ['requiredProp'],
+			},
+
+			//you can use the before function to process the parameter before it is matched agains the schema
+			//it works just like the process function
+			//this can also be an array
+			//in this example we add a property to make the schema match
+			before: obj => { return { ...obj, 'requiredProp': true } } 
 		}
 	},
 	

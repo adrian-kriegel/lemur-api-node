@@ -125,8 +125,24 @@ router.add(
 	//return something to trigger res.send()
 	//throw an APIError to send it to the client
 	//any other exception will result in an internal server error being sent to the client
-	callback: (req) =>
+	callback: async (req, res, next, desc) =>
 	{
+		//after checking all parameters, you can perform the verification again
+		//this is useful if some parameters are required if other parameters have certain values
+		await router.checkRequest(req, res, 
+			{
+				//initParams will turn this "semi-schema" into an actual schema
+				//this automatically happens in router.add but needs to be called manually in here
+				//since thill will yield a constant result, consider doing it outside of the callback
+				query: router.initParams(
+				{
+					date:
+					{
+						type: 'Date'
+					}
+				})
+			}
+		)
 		//just echo the parsed date
 		return req.query.date
 	}

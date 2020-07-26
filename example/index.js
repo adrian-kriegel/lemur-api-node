@@ -55,7 +55,10 @@ lemur.options('internal-api',
 			//since we use the process function to cast to Date anyway
 			pattern: /^\d{1,2}\/\d{1,2}\/\d{4}$/,
 		}
-	}
+	},
+
+	//set production: true to remove any descriptions and examples to reduce memory usage
+	production: false
 })
 
 //create a new router using our defined options

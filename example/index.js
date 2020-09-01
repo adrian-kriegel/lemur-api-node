@@ -114,6 +114,7 @@ router.add(
 				{
 					throw lemur.ERRORS.BAD_REQUEST()
 					.msg('please provide a date after 09/17/1997')
+					.data('some object or string for machine readable errors')
 				}
 
 				return date

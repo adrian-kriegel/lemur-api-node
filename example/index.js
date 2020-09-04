@@ -71,8 +71,8 @@ router.add(
 	//this endpoint will answer POST and GET requests
 	method: ['POST', 'GET'],
 
-	//express route string
-	route: '/echo-date',
+	//express route string(s)
+	route: ['/echo-date', '/format-date'],
 
 	//for documentation
 	description: 'Returns a date as a stringified date object.',

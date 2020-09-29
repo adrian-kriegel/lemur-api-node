@@ -7,7 +7,7 @@
     "lib": "lib"
   },
   "dependencies": {
-    "jsonschema": "^1.2.6",
+    "jsonschema": "1.2.6",
     "node-simple-cli": "git+https://github.com/adrian-kriegel/node-simple-cli.git",
     "request": "^2.88.2"
   },

@@ -154,6 +154,21 @@ router.add(
 
 router.add(
 {
+	method: 'GET',
+	route: '/email',
+	query: 
+	{
+		email: 
+		{
+			pattern: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+		}
+	},
+
+	callback: (req) => { return req.query.email }
+})
+
+router.add(
+{
 	method: ['POST', 'GET'],
 
 	route: '/typeof',
